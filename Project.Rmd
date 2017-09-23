@@ -1,0 +1,7 @@
+```{r}
+library(readxl)
+```
+
+```{r}
+raw_data <- read_excel("./Data/ENB2012_data.xlsx")
+```
