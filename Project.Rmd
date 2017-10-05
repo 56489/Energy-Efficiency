@@ -1,38 +1,68 @@
 ---
+title: "Capstone Project CKME 136"
+author: 'Student: Walter Cios; Student ID 500791945'
 output:
-  word_document: default
   html_document: default
+  word_document: default
 ---
+
 
 # Introduction
 
 ...
 
-# Load the required packages
+# Step 1: Data Cleaning and Preparation
 
-```{r}
+### Load the package to read the raw data from Excel; load also ggplot2 for graphs; load dplyr for applying transformations on the dataframes; load package GGally to be used for plotting
+
+```{r message = FALSE, warning = FALSE}
 library(readxl)
 library(ggplot2)
+library(dplyr)
+library(GGally)
 ```
 
-# Loading the data
+### Loading the data 
+
+After examining the original excel file, I noticed that only the first sheet had data, so I will only read
+that from the file
 
 ```{r}
-raw_data <- read_excel("./Data/ENB2012_data.xlsx")
-str(raw_data)
+raw_data <- read_excel("./Data/ENB2012_data.xlsx", sheet = 1)
 ```
 
+### Display structure of "raw_data"
+I reviewed that all 768 observations are loaded
 
+```{r}
+str(raw_data)
+```
+### Check for NA in the whole dataset and found none 
 ....
 
+```{r}
+sum(sapply(raw_data, is.na))
+```
 
+As an alternative we could also have done an NA check per columns and as expected found none 
 
+```{r}
+sapply(raw_data, function(x) { sum(is.na(x)) })
+```
+### Change column name to real variable names 
+
+....
 ```{r}
 data <- raw_data
 names(data) <- c("Relative Compactness", "Surface Area", "Wall Area", "Roof Area", "Overall Height",
                  "Orientation", "Glazing Area", "Glazing Area Distribution", "Heating Load", "Cooling Load")
-summary(data)
 ```
+
+## Converting categorical variables to factors
+
+As per the dataset description the variable "Orientation" has only four values N,W,S,E 
+The variable "Glazing Area Distribution"" has also the above and in addition "0" and "1"
+
 
 ```{r}
 toCategorical <- Vectorize(function(column) {
@@ -51,7 +81,29 @@ data$Orientation <- as.factor(toCategorical(data$Orientation))
 
 ```
 
+## Review again structure, this time for "data"
 
 ```{r}
-pairs(data)
+summary(data)
 ```
+
+From the summmary we can see that Orientation and Glazing Area Distribution, are qualitative-categorical variables, the other variables are quantitaive-continuous
+
+
+# Step 2: Exploratory Data Analysis 
+
+Split up categorical variables from the continuous ones, into a new dataframe "data_numeric" 
+
+```{r}
+data_numeric <- select(data, -Orientation, -`Glazing Area Distribution`)
+```
+
+## Paired Scatterplots
+
+I looked for a better display of plot and found the package "GGally" that is being used for scatterplots between all pairs of variables 
+
+```{r fig.height=10, fig.width=10}
+ggpairs(data_numeric)
+```
+
+# Spep 2 to be further detailed in the future anlaysis process 
