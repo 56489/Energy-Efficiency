@@ -1,7 +1,57 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+# Introduction
+
+...
+
+# Load the required packages
+
 ```{r}
 library(readxl)
+library(ggplot2)
 ```
+
+# Loading the data
 
 ```{r}
 raw_data <- read_excel("./Data/ENB2012_data.xlsx")
+str(raw_data)
+```
+
+
+....
+
+
+
+```{r}
+data <- raw_data
+names(data) <- c("Relative Compactness", "Surface Area", "Wall Area", "Roof Area", "Overall Height",
+                 "Orientation", "Glazing Area", "Glazing Area Distribution", "Heating Load", "Cooling Load")
+summary(data)
+```
+
+```{r}
+toCategorical <- Vectorize(function(column) {
+  switch(as.character(column),
+                      "0" = "No Glazing Area",
+                      "1" = "Uniform",
+                      "2" = "North",
+                      "3" = "East",
+                      "4" = "South",
+                      "5" = "West",
+                      NA)
+})
+
+data$`Glazing Area Distribution` <- as.factor(toCategorical(data$`Glazing Area Distribution`))
+data$Orientation <- as.factor(toCategorical(data$Orientation))
+
+```
+
+
+```{r}
+pairs(data)
 ```
