@@ -2,8 +2,8 @@
 title: "Capstone Project CKME 136"
 author: 'Student: Walter Cios; Student ID 500791945'
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 
 
@@ -13,13 +13,17 @@ output:
 
 # Step 1: Data Cleaning and Preparation
 
-### Load the package to read the raw data from Excel; load also ggplot2 for graphs; load dplyr for applying transformations on the dataframes; load package GGally to be used for plotting
+- Load the package to read the raw data from Excel;
+- load also ggplot2 for graphs; 
+- load dplyr for applying transformations on the dataframes; 
+- load package GGally to be used for plotting
 
 ```{r message = FALSE, warning = FALSE}
 library(readxl)
 library(ggplot2)
 library(dplyr)
 library(GGally)
+library(reshape2)
 ```
 
 ### Loading the data 
@@ -92,10 +96,11 @@ From the summmary we can see that Orientation and Glazing Area Distribution, are
 
 # Step 2: Exploratory Data Analysis 
 
-Split up categorical variables from the continuous ones, into a new dataframe "data_numeric" 
+Split up categorical variables from the continuous ones, into a new dataframe "data_categorical and keep the continuos ones in "data_numerical"
 
 ```{r}
 data_numeric <- select(data, -Orientation, -`Glazing Area Distribution`)
+data_categorical <- select(data, Orientation, `Glazing Area Distribution`)
 ```
 
 ## Paired Scatterplots
@@ -106,4 +111,62 @@ I looked for a better display of plot and found the package "GGally" that is bei
 ggpairs(data_numeric)
 ```
 
-# Spep 2 to be further detailed in the future anlaysis process 
+
+
+## Outlier detection
+Review if there are outliers by using boxplots.Going forward I will try to use only ggplot for all graphs to create an consistent view
+
+Looking at the Excel Table "Variable Review for Analysis" that has the min and Max 
+
+```{r}
+small <-select (data_numeric,`Relative Compactness`,`Glazing Area`)
+
+large <-select (data_numeric,`Surface Area`,`Roof Area`,`Wall Area`)
+
+medium <-select (data_numeric,`Overall Height`,`Heating Load`,`Cooling Load`)
+```
+
+```{r message=F}
+small_long <- melt(small)
+ggplot(data=small_long, aes(x = variable, y = value)) +
+  geom_boxplot(fill = "green") +
+  geom_point() +
+  ggtitle("Boxplots of variables with small values") +
+  xlab("Variable Name") +
+  ylab("Values")
+```
+```{r message=F}
+medium_long <- melt(medium)
+
+ggplot(data=medium_long, aes(x = variable, y = value)) +
+  geom_boxplot(fill = "green") +
+  geom_point() +
+  ggtitle("Boxplots of variables with medium values") +
+  xlab("Variable Name") +
+  ylab("Values")
+```
+
+```{r message=F}
+# Step 2 
+large_long <- melt(large)
+
+ggplot(data=large_long, aes(x = variable, y = value)) +
+  geom_boxplot(fill = "green") +
+  geom_point() +
+  ggtitle("Boxplots of variables with large values") +
+  xlab("Variable Name") +
+  ylab("Values")
+```
+
+```{r fig.height=8, fig.width=10}
+correlationMatrix <- cor(data_numeric, method = "pearson")
+correlationsLong <- melt(correlationMatrix)
+
+ggplot(data = correlationsLong, aes(x = Var1, y = Var2)) +
+  geom_tile(aes(fill = value)) +
+  geom_text(aes(label = round(value, 2))) +
+  scale_fill_gradient(low = "yellow", high = "green") +
+  ggtitle("Correlation Matrix Heatmap") +
+  xlab("Variable Names") +
+  ylab("Variable Names") 
+```
