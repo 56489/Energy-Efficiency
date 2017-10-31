@@ -2,8 +2,8 @@
 title: "CKME136 Capstone Project / Fall 2017"
 author: 'Student: Walter Cios; Student ID 500791945'
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 
 
@@ -98,12 +98,13 @@ names(data) <- c("Relative Compactness", "Surface Area", "Wall Area", "Roof Area
 
 str(data)
 ```
+
 ### Exclude from analysis 48 tuples where "Glazing Area Distribution" = 0 
 
 ```{r}
 unique(data$`Glazing Area Distribution`)
 ```
-The original dataset has initially for "Glazing Area Distribution" six different Values: "0" = No Glazing Area (no windows); 1 = Uniform (25 % windows on each side), 2 = North, 3 = East. 4 = South, 5 = West 
+The original dataset has initially for "Glazing Area Distribution" six different values: "0" = No Glazing Area (no windows); 1 = Uniform (25 % windows on each side), 2 = North, 3 = East, 4 = South, 5 = West 
 
 We see values like "0" (No Glazing Area) which never apply to residential buildings and might hinder us in answering our research questions by influencing the model fit, since there is not possible that a house has no windows and we will remove those "0" tuples from the Glazing Area Distribution 
 
@@ -228,7 +229,7 @@ medium <- select(data_numeric,`Overall Height`,`Heating Load`,`Cooling Load`)
 large <- select(data_numeric,`Surface Area`,`Roof Area`,`Wall Area`)
 ```
 
-### Creating boxplots for the grouped variables into small, medium and large
+#### Creating boxplots for the grouped variables into small, medium and large
 
 I used a couple of features to make the boxplots better visible on paper:
 
@@ -326,14 +327,11 @@ ggplot(data = correlationsLong, aes(x = Var1, y = Var2)) +
 table(data_categorical$Orientation)
 ```
 
-The tables are displayed for both categorical variable "Orientation" and "Glazing Are Distribution"to show that the  
-
+The tables are displayed for both categorical variable "Orientation" and "Glazing Are Distribution"to show that the  "Glazing Area Distribution" has the four values of the cardinal directions and includes also"Uniform" 
 
 ```{r}
 table(data_categorical$`Glazing Area Distribution`)
 ```
-
-"Glazing Area Distribution" has the four values of the cardinal directions and includes also"Uniform" 
 
 Next we will use facet_grid to plot the histograms of the Cooling Load for each value of the categorical variables.
 
@@ -552,6 +550,14 @@ As we see from that table, the random forest with our chosen parameters seems to
 - They repeated the cross-validation many times and the standard error for their MSE was 1.6, which puts us roughly at 2 standard errors from their average MSE
 - We used a newer random forest package that didn't exist when they did their study(2011)
 
+### The best performing model
+
+Both models: Random Forest and CART have very similar R-squared (Random Forest has 0.9689 nd CART has 0.9722)
+
+The best performing Model from the Initial Results seems to be Random Forest since it has a lower MSE at 2.79 compared to CART that has 5.59
+
+
+
 ### A more in-depth look
 
 Although the CART MSE is almost twice the random forest MSE, the CART R2 is surprisingly larger, so we want to have a more in-depth look at the predictions.
@@ -571,9 +577,18 @@ plot(observed, predicted)
 abline(0, 1)
 ```
 
+After the Inintial Results submission, I will investigate the predictions with the largest errors and try to identify if there is a pattern or some easily identifiable conditions when the model makes mistakes.
+
+For both models Random Forest and CART I selected not to investigate confidence intervals because there is no standard theoretically sound way to compute them like there is for linear models.
+
 # Step 7: Answering the Research Questions
 
-### Question 1: Which are the most infuential variables when predicting the cooling efficiency?
+### Can the cooling load be predicted accurately with a statistical model?
+
+As a result of the initial analysis, yes this can be done byusing the Random Forest statistical model. 
+
+
+### Which are the most infuential variables when predicting the cooling efficiency?
 
 We will try to use all the models to answer this question and then compare the results:
 
