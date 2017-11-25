@@ -220,7 +220,7 @@ Relative Compactness & Heating Load /medium strong positive correlation
 
 Wall Area & Heating Load / low positive correlation
 
-Relative Compacteness & Cooling Load / poitive high correlation 
+Relative Compactness & Cooling Load / poitive high correlation 
 
 Surface Area & Cooling Load / negative high correlation 
 
@@ -640,9 +640,9 @@ Now the CART model will be fit on the whole dataset because the previous models 
 ```{r}
 CARTmodel <- rpart(`Cooling Load` ~ ., data = modelData, method = "anova",
                    control = rpart.control(
-                   minsplit = CARTeval$minsplit[1],
-                   maxdepth = CARTeval$maxdepth[1],
-                   cp = CARTeval$cp[1]))
+                   minsplit = CARTeval$minsplit[5],
+                   maxdepth = CARTeval$maxdepth[5],
+                   cp = CARTeval$cp[5]))
 ```
 
 The prediction analysis and model comparison will be done after training the linear model.
@@ -1041,9 +1041,9 @@ At this point we will compare the results of all the models that we have been tr
 ```{r}
 evaluationResults <- data.frame(
   model = c("original study", "Random Forest", "CART", "Linear Model"),
-  R2 = c(NA, RFevalCV$R2[1], CARTeval$R2[1], LMeval$R2[1]),
-  MSE = c(6.59, RFevalCV$MSE[1], CARTeval$MSE[1], LMeval$MSE[1]),
-  MAE = c(1.42, RFevalCV$MAE[1], CARTeval$MAE[1], LMeval$MAE[1]))
+  R2 = c(NA, RFevalCV$R2[1], CARTeval$R2[5], LMeval$R2[3]),
+  MSE = c(6.59, RFevalCV$MSE[1], CARTeval$MSE[5], LMeval$MSE[3]),
+  MAE = c(1.42, RFevalCV$MAE[1], CARTeval$MAE[5], LMeval$MAE[3]))
 
 evaluationResults
 ```
@@ -1056,17 +1056,17 @@ As it can be seen from the table, the random forest with our chosen parameters s
 
 ### The best performing model
 
-Both models: Random Forest and CART have very similar R-squared (Random Forest has 0.9689 and CART has 0.9722)
+Both models: Random Forest and CART have very similar R-squared (Random Forest has 0.968 and CART has 0.972)
 
-The best performing Model from the Initial Results seems to be Random Forest since it has a lower MSE at 2.79 compared to CART that has 5.59
+The best performing Model from the Initial Results seems to be Random Forest since it has a lower MSE at 2.79 compared to CART that has 4.92
 
-In case of the best linear model, the R-squared is 0.906 what brings it on the last place. 
+In case of the best linear model, the R-squared is 0.9058 what brings it on the last place. 
 
 ### Step 7: Answering the Research Questions
 
 **Can the cooling load be predicted accurately with a statistical model?**
 
-As a result of the initial analysis, yes this can be done by using the Random Forest statistical model. The error is small relative to the values of the predicted variable and the R2 looks very good (over 0.97).
+As a result of the initial analysis, yes this can be done by using the Random Forest statistical model. The error is small relative to the values of the predicted variable and the R2 looks very good (over 0.968).
 
 **Explore trade-offs between accuracy and interpretability of the model**
 
@@ -1088,7 +1088,7 @@ As was mentioned in the beginning, CART is a very interpretable model and even a
 rpart.plot(CARTmodel, uniform = T)
 ```
 
-When we look at the tree it seems that Relative Compactness, Wall Area and Glazing Area are the most important variables, as they make up the first three levels. We can see the Surface Area and Glazing Area Distribution show up a few times on the last 2 levels. We don't see at all the Roof Area, Orientation and Overall Height.
+When we look at the tree it seems that Relative Compactness, Wall Area and Glazing Area are the most important variables, as they make up the first three levels. We can see the Surface Area show up a few times on the last 2 levels. We don't see at all the Roof Area, Orientation, Glazing Area Distribution and Overall Height.
 
 The fact that the Orientation is less important resulted also in another study that was referenced in the Literature Review section: "Modelling energy efficiency performance of residential buildings stocks based on Bayesian statistical model" - by Marta Braulio-Gonzalo, Pablo Juan, Maria D. Bovea, Maria Jose Rua. This referenced study was working with another parameters (like shape factor of the building and year of construction) where it was specified that "The least significant (parameter) is the solar orientation of the main facade of the building" 
 
@@ -1103,7 +1103,7 @@ vimp is a function from the randomForestSRC package that computes the variable i
 plot(vimp(RFmodel))
 ```
 
-As we can see from the variable importance plot, the Random Forest model gives different results. The most important variable is the Roof Area, followed closely by the Surface Area, while the Overall Height and Relative Compactness have an average importance. Wall Area and Glazing area have minor influence on the predictions, while Orientation and Glazing Area Distribution don't seem to matter for this model.
+As can be seen from the variable importance plot, the Random Forest model gives different results. The most important variable is the Overall Height, followed closely by the Surface Area, and Roof Area while the Relative Compactness has an average importance. Wall Area and Glazing area have minor influence on the predictions, while Orientation and Glazing Area Distribution don't seem to matter for this model.
 
 *Linear Model interpretation*
 
