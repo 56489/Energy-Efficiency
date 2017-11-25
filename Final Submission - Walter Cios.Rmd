@@ -1072,7 +1072,7 @@ As a result of the initial analysis, yes this can be done by using the Random Fo
 
 It can be seen that while CART is more interpretable, random forest gives a much lower error. The easy way to see how the prediction is calculated has to be given up for a more accurate prediction.
 
-For the linear model, splitting variables into groups produces a more accurate prediction, at the expense of interpretability. Figuring out what happens when those variables change is harder to do when there are two coefficients associated with each variable. Also, the AIC recommended to pick a model with fewer variables instead of the model with all the variables and a slightly bigger R2.
+For the linear model, the AIC recommended to pick a model with fewer variables instead of the model with all the variables and a slightly bigger R2.
 
 Although from an engineering perspective, the most important variable should be the Glazing Area, in the random forest it is almost insignificant, while in CART and the linear model it is considered important. This means that these models might still be useful, despite the lower accuracy because they capture the real relationships better.
 
